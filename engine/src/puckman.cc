@@ -11,6 +11,7 @@ void sad_panda()
 {
   std::cerr << "Unhappy - needs some stuff to run!"
 	    << std::endl;
+  exit(5);
 }
 
 int main(int argc, char** argv)
@@ -23,7 +24,7 @@ int main(int argc, char** argv)
   int seed;
   Random rand;
   rand.seed(seed);
-  int width = rand.rand();
+  int width = rand.rand() % 200;
 
   World world(width);
   world.generate(&rand);

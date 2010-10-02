@@ -1,2 +1,5 @@
 *.cc~
 *.h~
+engine/bin
+engine/build
+Makefile~
