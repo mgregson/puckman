@@ -9,10 +9,14 @@ char random_unfill(Random* rand)
   return EMPTY;
 }
 
-World::World(int width)
+World::World(int width,
+	     Client* a,
+	     Client* b)
 {
   grid = (char*)malloc(width*width);
   memset((void*)grid, WALL, width*width);
+  current = a;
+  other = b;
 }
 
 World::~World()

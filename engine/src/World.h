@@ -15,7 +15,7 @@ public:
   int width;
   char* grid;
 
-  World(int);
+  World(int, Client*, Client*);
   ~World();
 
   void generate(Random*);

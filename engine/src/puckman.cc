@@ -26,11 +26,11 @@ int main(int argc, char** argv)
   rand.seed(seed);
   int width = rand.rand() % 200;
 
-  World world(width);
-  world.generate(&rand);
-
   Client a(argv[1]);
   Client b(argv[2]);
+
+  World world(width, &a, &b);
+  world.generate(&rand);
 
   while(a.live && b.live)
     {
