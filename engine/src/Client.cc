@@ -3,9 +3,12 @@
 #include <unistd.h>
 #include <signal.h>
 #include <string>
+#include <iostream>
 #include "Client.h"
 
-void Client::Client(std::string cmd)
+#include "defines.h"
+
+Client::Client(char* cmd)
 {
   live = false;
 
@@ -16,14 +19,14 @@ void Client::Client(std::string cmd)
     {
       std::cerr << "Failed to create read pipe!"
 		<< std::endl;
-      perror();
+      perror("Client.cc");
       exit(1);
     }
   if(pipe(writepipe))
     {
       std::cerr << "Failed to create write pipe!"
 		<< std::endl;
-      perror();
+      perror("Client.cc");
       exit(2);
     }
 
@@ -33,15 +36,14 @@ void Client::Client(std::string cmd)
 	{
 	  std::cerr << "Unable to fork!"
 		    << std::endl;
-	  perror();
+	  perror("Client.cc");
 	  exit(3);
 	}
 
-      //We are the parent
       close(writepipe[0]);
       close(readpipe[1]);
-      kidin = readpipe[0];
-      kidout = writepipe[1];
+      kidin = fdopen(readpipe[0], "r");
+      kidout = fdopen(writepipe[1], "w");
 
       live = true;
     }
@@ -58,8 +60,19 @@ void Client::Client(std::string cmd)
     }
 }
 
+Client::~Client()
+{
+  if(live) die();
+}
+
 void Client::do_turn(World* world)
 {
+  if(countdown <= 0)
+    {
+      countdown = 0;
+      world->grid[x+(y*world->getWidth())]
+	= state = PUCK;
+    }
   send_world(world);
   char action = read_action();
   int dx = x, dy = y;
@@ -86,26 +99,36 @@ void Client::do_turn(World* world)
       return;
     }
   check_and_move(dx, dy, world);
+  if(countdown > 0)
+    countdown --;
+}
+
+char Client::read_action()
+{
+  return (char)getc(kidin);
 }
 
 void Client::send_world(World* world)
 {
-  for(int i = 0; i < world->width; i++)
+  int outbs = 0;
+  int d = 0;
+  int e = 0;
+  int tries = 0;
+  char* size = new char[10];
+  fprintf(kidout, "$d\n", world->getWidth());
+  for(int i = 0; i < world->getWidth(); i++)
     {
-      std::cout.write(world->grid,
-		      world->width);
+      write(1, world->grid, world->getWidth());
       std::cout << std::endl;
 
-      //TODO: Also write this shit to the client
-      int outbs = 0;
-      int d = 0;
-      int e = 0;
-      int tries = 0;
-      while(outbs < width)
+      outbs = 0;
+      e = 0;
+      tries = 0;
+      while(outbs < world->getWidth())
 	{
-	  d = write(kidout,
+	  d = write(fileno(kidout),
 		    world->grid,
-		    world->width);
+		    world->getWidth());
 	  if(d < 0)
 	    e++;
 	  else
@@ -139,15 +162,42 @@ void Client::check_and_move(int dx,
       return;
     }
 
+  world->move(x,y,dx,dy);
   switch(grid[offs])
     {
     case PILL:
       score += 2;
+      grid[offs] = state = 'S';
       break;
     case DOT:
       score++;
       break;
+    case PUCK:
+      if(state == SPUCK)
+	{
+	  world->other->die();
+	}
+      else
+	{
+	  world->other->die();
+	  die();
+	}
+      break;
+    case SPUCK:
+      if(state == SPUCK)
+	{
+	  world->other->die();
+	}
+      die();
+      break;
+    case GHOST:
+      die();
+      break;
+    default:
+      break;
     }
+  x = dx;
+  y = dy;
 }
 
 void Client::print_score()

@@ -1,25 +1,28 @@
 #ifndef __WORLD_H__
 #define __WORLD_H__
 
-#define IN_BOUNDS(x) (0 < x && x > width);
+#include "Random.h"
 
-#define EMPTY  ' '
-#define WALL   '+'
-#define PILL   'O'
-#define DOT    '.'
+#define IN_BOUNDS(x) (0 < x && x > width)
+
+class Client;
 
 class World
 {
-private:
-  int width;
 public:
+  Client* current;
+  Client* other;
+  int width;
   char* grid;
 
-  World();
+  World(int);
   ~World();
+
+  void generate(Random*);
 
   int getWidth();
   int move(int, int, int, int);
-}
+  void flip();
+};
 
 #endif

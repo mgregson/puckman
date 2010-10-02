@@ -8,21 +8,27 @@
 
 class Client
 {
-private:
+public:
   char state;
   int x, y;
-  int score;
-  pid_t pid;
-  int kidin, kidout;
   bool live;
+  int score;
+  int countdown;
+
+private:
+  pid_t pid;
+  FILE* kidin;
+  FILE* kidout;
   void send_world(World*);
-  int read_action();
-  void check_and_move(int, int);
+  char read_action();
+  void check_and_move(int, int, World*);
+
 public:
-  Client(std::string);
+  Client(char*);
   ~Client();
   void do_turn(World*);
   void print_score();
+  void die();
 };
 
 #endif
