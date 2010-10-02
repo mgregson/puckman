@@ -16,4 +16,6 @@
 #define SCORE_SPUCK     6
 #define SCORE_LASTMAN   5
 
+#define P_HOLLOW        0.30
+
 #endif
