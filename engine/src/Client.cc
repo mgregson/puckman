@@ -17,6 +17,7 @@ Client::Client(char* cmd)
   x = 0;
   y = 0;
   score = 0;
+  state = PUCK;
 
   FD_ZERO(&readset);
 
