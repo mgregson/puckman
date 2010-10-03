@@ -1,6 +1,6 @@
 all: basic_puckman
 
-basic_puckman:
+basic_puckman: *.ml
 	ocamlc basic_puckman.ml && cp a.out basic_puckman
 
 clean:
