@@ -1,0 +1,9 @@
+This PUCKMAN client is based on a TRON client by blueiris and requires Node.JS and the Google V8 Javascript engine.
+It has been modified to work with v0.2.2 , likely adding some bugs. Have fun fixing them.
+On Ubuntu the Google V8 javascript engine is available as libv8
+Alternatively check out http://code.google.com/apis/v8/build.html
+Note: This should work with most node.js implementations, however on my machine v0.2.3 lacks the process object [which... odd]
+node.js has been unable to repro, so v0.2.3 _should_ be ok for you to use, but the Makefile auto downloads v0.2.2 and uses it.
+Then install http://nodejs.org/ [namely v0.2.2 http://nodejs.org/dist/node-v0.2.2.tar.gz ]
+Now you can run your bot with ./node [botname.js]
+Make sure to submit a runmefile and you likely want to submit with the nodejs version built locally.

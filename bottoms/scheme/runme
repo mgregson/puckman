@@ -1,0 +1,2 @@
+#!/bin/bash
+mzscheme -f basic_puckman.scm
