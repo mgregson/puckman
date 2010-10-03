@@ -1,2 +1,3 @@
 #!/bin/bash
-perl runme.pl
+rawr=${0%runme}
+cd $rawr;perl runme.pl

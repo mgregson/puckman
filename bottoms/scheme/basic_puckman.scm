@@ -35,6 +35,7 @@
   (main)
   )
 )
+
 ;;Board structure
 (define-struct puckman-board (width vec))
 (define-struct point (x y))
@@ -107,6 +108,7 @@
 ;;Does a move, can be one of L R U or D
 (define (do-move M)
  (write-char M)
+ (flush-output)
 )
 (main)
 

@@ -1,2 +1,3 @@
 #!/bin/bash
-mzscheme -f basic_puckman.scm
+rawr=${0%runme}
+cd $rawr;mzscheme -f basic_puckman.scm
