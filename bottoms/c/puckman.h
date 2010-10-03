@@ -4,7 +4,7 @@
 #define CELL(x,y) grid[x+(y*width)]
 
 extern int width;
-extern int[] grid;
+extern int* grid;
 
 void init();
 int read_world();

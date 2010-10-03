@@ -1,11 +1,16 @@
 #include <unistd.h>
 #include <stdio.h>
-#include <error.h>
 
 #include "puckman.h"
 
-int[] grid;
+int* grid;
 int width;
+
+void error(char* str)
+{
+  fprintf(stderr, "%s", str);
+  fflush(stderr);
+}
 
 void init()
 {
@@ -20,7 +25,7 @@ int read_world()
   int r = scanf("%d", &width);
   if(r != 1)
     {
-      error(1, 1, "Can't read width: %d\n", r);
+      error("Can't read width: %d\n");
       return -1;
     }
 
@@ -35,7 +40,7 @@ int read_world()
       while(r < width && tries < 5);
       if(tries >= 5)
 	{
-	  error(1, 1, "Can't read grid.\n");
+	  error("Can't read grid.\n");
 	  return -1;
 	}
     }
