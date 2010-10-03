@@ -3,3 +3,4 @@
 engine/bin
 engine/build
 Makefile~
+*.c~

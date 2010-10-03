@@ -43,7 +43,24 @@ Client::Client(char* cmd)
       close(writepipe[0]);
       close(readpipe[1]);
       kidin = fdopen(readpipe[0], "r");
+      if(!kidin)
+	{
+	  std::cerr << "Can't open kidin fd!"
+		    << std::endl;
+	  perror("Client.cc");
+	  exit(6);
+	}
       kidout = fdopen(writepipe[1], "w");
+      if(!kidout)
+	{
+	  std::cerr << "Can't open kidout fd!"
+		    << std::endl;
+	  perror("Client.cc");
+	  exit(7);
+	}
+
+      setvbuf(kidin, NULL, _IONBF, 0);
+      setvbuf(kidout, NULL, _IONBF, 0);
 
       live = true;
     }
