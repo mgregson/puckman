@@ -22,7 +22,7 @@
 #define IS_SUPER (CELL(epos_x,epos_y) == SPUCK)
 
 extern int width;
-extern int* grid;
+extern char* grid;
 extern int pos_x;
 extern int pos_y;
 extern int epos_x;

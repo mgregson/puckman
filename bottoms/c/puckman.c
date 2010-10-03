@@ -1,12 +1,15 @@
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "puckman.h"
 
-int* grid;
+char* grid = 0;
 int width;
 int pos_x;
 int pos_y;
+int epos_x;
+int epos_y;
 
 void error(char* str)
 {
@@ -20,6 +23,12 @@ void init()
   setvbuf(stdin, NULL, _IONBF, 0);
 }
 
+void cleanup()
+{
+  if(grid)
+    free(grid);
+}
+
 int read_world()
 {
   int i = 0;
@@ -31,7 +40,8 @@ int read_world()
       error("Can't read width: %d\n");
       return 0;
     }
-
+  if(!grid)
+    grid = (char*)malloc(width*width);
   for(i = 0; i < width; ++i)
     {
       tries = 0;
