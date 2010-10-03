@@ -9,7 +9,7 @@ char random_unfill(Random* rand)
 {
   if(float(rand->rand())/RAND_MAX > P_HOLLOW)
     return EMPTY;
-  return WALL;
+  return EMPTY;
 }
 
 bool _clear_from(int sx,

@@ -163,7 +163,9 @@ char Client::read_action()
     }
   */
   char r = '~';
-  read(fileno(kidin), &r, 1);
+  int status;
+  while(status = read(fileno(kidin), &r, 1) < 1)
+    perror("read_action");
   return r;
 }
 
@@ -265,6 +267,8 @@ void Client::print_score()
 
 void Client::die()
 {
+  std::cerr << "Killing client for bad behaviour."
+	    << std::endl;
   live = false;
   kill(pid, 9);
 }
