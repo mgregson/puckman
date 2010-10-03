@@ -200,6 +200,7 @@ void Client::send_world(World* world)
 	  break;
 	}
     }
+  write(fileno(kidout), "\n", 1);
 }
 
 void Client::check_and_move(int dx,

@@ -71,6 +71,7 @@ int read_world()
       error("Can't read grid.\n");
       return 0;
     }
+  getchar();
 
   for(i = 0; i < width; ++i)
     {
