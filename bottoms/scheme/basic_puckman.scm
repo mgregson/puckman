@@ -1,17 +1,53 @@
 ;;A basic PUCKMAN client
 (require (lib "43.ss" "srfi"))
+;;Chose a move
+(define (chose-move board self)
+  (if (have-power board) (try-to-eat-competitor board self try-to-eat-dot) (try-to-eat-dot board self) )
+  )
+;;If it can eat the competitor in one move it does it
+;;Otherwise call alternate strategy
+(define (try-to-eat-competitor board self alt)
+  (cond
+  ((eq? #\P (above-p board self)) #\U)
+  ((eq? #\P (bellow-p board self)) #\D)
+  ((eq? #\P (left-of-p board self)) #\L)
+  ((eq? #\P (right-of-p board self)) #\R)
+  (else (alt board self) );;Default is left
+  ))
+(define (try-to-eat-dot board self)
+ (cond
+  ((eq? #\. (above-p board self)) #\U)
+  ((eq? #\. (bellow-p board self)) #\D)
+  ((eq? #\. (left-of-p board self)) #\L)
+  ((eq? #\. (right-of-p board self)) #\R)
+  (else #\L);;Default is left
+  ))
+;;Main loop
+;;Sample main loop
+;;Attempts to eat a dot. If it can't, it goes left
+(define (main)
+ (letrec
+   ((board (read-board-state))
+    (self (find-self board))
+    (move (chose-move board self))
+    )
+  (do-move move)
+  (main)
+  )
+)
 ;;Board structure
 (define-struct puckman-board (width vec))
 (define-struct point (x y))
 ;;All return ! if out of bounds
+
 ;;Determine whats bellow a point
 (define (bellow-p board p)
  (get-from-board board (make-point (+ 1 (point-x p)) (point-y p)))
 )
 ;;Determine whats above a point
 (define (above-p board p)
- (get-from-board board (make-point (-  (point-x p) 1) (point-y p) ))
-)
+ (get-from-board board (make-point (-  (point-x p) 1) (point-y p) )))
+
 ;;Determine whats right of a point
 (define (right-of-p board p)
  (get-from-board board (make-point (point-x p) (+ (point-y p) 1)))
@@ -46,6 +82,9 @@
   (make-point (quotient pos (puckman-board-width board))
 	      (modulo pos (puckman-board-width board)) )
 ))
+(define (have-power board)
+ (if (eq? (vector-index (lambda (n) (eq? #\@ n)) (puckman-board-vec board)) #f) #f #t)
+)
 (define (find-enemy board)
  (let ((pos (vector-index (lambda (n) (or (eq? #\P n) (eq? #\S n))) (puckman-board-vec board))))
   (make-point (quotient pos (puckman-board-width board))
@@ -69,25 +108,5 @@
 (define (do-move M)
  (write-char M)
 )
-;;Sample main loop
-;;Attempts to eat a dot. If it can't, it goes left
-(define (main)
- (letrec
-   ((board (read-board-state))
-    (self (find-self board))
-    (move (chose-move board self))
-    )
-  (do-move move)
-  (main)
-  )
-)
-;;(main)
-(define (chose-move board self)
- (cond
-  ((eq? #\. (above-p board self)) #\U)
-  ((eq? #\. (bellow-p board self)) #\D)
-  ((eq? #\. (left-of-p board self)) #\L)
-  ((eq? #\. (right-of-p board self)) #\R)
-  (else #\L);;Default is left
-  ))
+(main)
 
