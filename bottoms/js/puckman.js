@@ -76,11 +76,12 @@ exports.play = function(moveFn) {
                   invalid_input("expected width, height on first line, got \"" + line + "\"");
               }
           } else {
-              if (line.length != width) {
+	      /* Check to make sure the line length is correct. Either require one line of width or line of width*width [i.e. all data at once] */
+              if (line.length != width && line.length != width*width) {
                   invalid_input("malformed board, line wrong length:" + line.length);
               }
               data = data + line;
-              if (lineNumber == height) {
+              if (lineNumber == height || line.length == width*width) {
                   sys.puts(moveFn(
                   /* The Board object */
                   {
