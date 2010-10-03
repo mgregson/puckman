@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string>
 #include <unistd.h>
+#include <sys/select.h>
+#include <sys/time.h>
 #include "World.h"
 
 class Client
@@ -19,6 +21,8 @@ private:
   pid_t pid;
   FILE* kidin;
   FILE* kidout;
+  fd_set readset;
+  timeval timeout;
   void send_world(World*);
   char read_action();
   void check_and_move(int, int, World*);

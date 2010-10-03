@@ -1,7 +1,7 @@
 CC = g++
-LD = g++
+LD = g++ -g
 
-CFLAGS = -c
+CFLAGS = -c -g
 
 all: init contest_engine
 

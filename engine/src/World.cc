@@ -60,6 +60,7 @@ bool _clear_from(int sx,
 								    seen)))
     {
       grid[sx+(sy*gwidth)] = EMPTY;
+      grid[(gwidth-sx)+((gwidth-sy)*gwidth)] = EMPTY;
       return true;
     }
   return false;
@@ -85,8 +86,9 @@ World::World(int width,
 	     Client* a,
 	     Client* b)
 {
+  this->width = width;
   grid = (char*)malloc(width*width);
-  memset((void*)grid, WALL, width*width);
+  memset((void*)grid, EMPTY, width*width);
   current = a;
   other = b;
 }

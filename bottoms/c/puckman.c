@@ -27,6 +27,7 @@ void cleanup()
 {
   if(grid)
     free(grid);
+  grid = 0;
 }
 
 int read_world()
@@ -34,28 +35,41 @@ int read_world()
   int i = 0;
   int j = 0;
   int tries = 0;
-  int r = scanf("%d", &width);
-  if(r != 1)
+  width = 0;
+  int r;
+  do
     {
-      error("Can't read width: %d\n");
-      return 0;
+      r = fgetc(stdin);
+      if(r < '0' || r > '9') continue;
+      width = width*10;
+      width += (r-'0');
     }
+  while(r != '\n');
   if(!grid)
     grid = (char*)malloc(width*width);
-  for(i = 0; i < width; ++i)
+  r = 0;
+  while(r < width*width && tries < 10)
     {
-      tries = 0;
-      r = 0;
-      do
+      j = read(0, &grid[r], width*width-r);
+      if(j < 0)
 	{
-	  r = read(0, &grid[i*width], width);
-	}
-      while(r < width && tries < 5);
-      if(tries >= 5)
-	{
-	  error("Can't read grid.\n");
+	  error("Reading is bad.\n");
 	  return 0;
 	}
+      if(j == 0)
+	{
+	  error("Unexpected EOF.\n");
+	  return 0;
+	}
+      fprintf(stderr, "Read %d bytes: %d, %d\n", j, r, width*width);
+      r += j;
+      ++tries;
+    }
+  if(tries >= 10)
+    {
+      fprintf(stderr, "Reading grid: %d,%d\n", i, r);
+      error("Can't read grid.\n");
+      return 0;
     }
 
   for(i = 0; i < width; ++i)
@@ -82,20 +96,20 @@ int read_world()
 
 void left()
 {
-  printf("L");
+  write(fileno(stdout), "L", 1);
 }
 
 void right()
 {
-  printf("R");
+  write(fileno(stdout), "R", 1);
 }
 
 void up()
 {
-  printf("U");
+  write(fileno(stdout), "U", 1);
 }
 
 void down()
 {
-  printf("D");
+  write(fileno(stdout), "D", 1);
 }

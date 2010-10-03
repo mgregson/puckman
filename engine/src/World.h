@@ -3,7 +3,7 @@
 
 #include "Random.h"
 
-#define IN_BOUNDS(x) (0 < x && x > width)
+#define IN_BOUNDS(x) (0 <= x && x < width)
 
 class Client;
 

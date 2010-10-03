@@ -4,6 +4,8 @@
 #include <signal.h>
 #include <string>
 #include <iostream>
+#include <sys/select.h>
+
 #include "Client.h"
 
 #include "defines.h"
@@ -11,9 +13,19 @@
 Client::Client(char* cmd)
 {
   live = false;
+  countdown = 0;
+  x = 0;
+  y = 0;
+  score = 0;
+
+  FD_ZERO(&readset);
+
+  timeout.tv_usec = 0;
+  timeout.tv_sec = 60;
 
   int readpipe[2];
   int writepipe[2];
+  int waitpipe[2];
 
   if(pipe(readpipe))
     {
@@ -25,6 +37,13 @@ Client::Client(char* cmd)
   if(pipe(writepipe))
     {
       std::cerr << "Failed to create write pipe!"
+		<< std::endl;
+      perror("Client.cc");
+      exit(2);
+    }
+  if(pipe(waitpipe))
+    {
+      std::cerr << "Failed to create wait pipe!"
 		<< std::endl;
       perror("Client.cc");
       exit(2);
@@ -62,6 +81,13 @@ Client::Client(char* cmd)
       setvbuf(kidin, NULL, _IONBF, 0);
       setvbuf(kidout, NULL, _IONBF, 0);
 
+      int foo = 1;
+      write(waitpipe[1], &foo, 1);
+      close(waitpipe[0]);
+      close(waitpipe[1]);
+
+      FD_SET(fileno(kidin), &readset);
+
       live = true;
     }
   else
@@ -69,8 +95,13 @@ Client::Client(char* cmd)
       close(writepipe[1]);
       close(readpipe[0]);
 
-      dup2(writepipe[0], 1);
-      dup2(readpipe[1], 0);
+      dup2(writepipe[0], 0);
+      dup2(readpipe[1], 1);
+
+      int foo;
+      read(waitpipe[0], &foo, 1);
+      close(waitpipe[0]);
+      close(waitpipe[1]);
 
       execv(cmd, NULL);
       exit(4);
@@ -87,12 +118,13 @@ void Client::do_turn(World* world)
   if(countdown <= 0)
     {
       countdown = 0;
-      world->grid[x+(y*world->getWidth())]
-	= state = PUCK;
+      world->grid[x+(y * world->getWidth())] = SELF;
+      state = PUCK;
     }
   send_world(world);
   char action = read_action();
   int dx = x, dy = y;
+  std::cerr << action << std::endl;
   switch(action)
     {
     case 'L':
@@ -122,7 +154,16 @@ void Client::do_turn(World* world)
 
 char Client::read_action()
 {
-  return (char)getc(kidin);
+  /*
+  if(select(1, &readset, 0, 0, &timeout) <= 0)
+    {
+      die();
+      return '~';
+    }
+  */
+  char r = '~';
+  read(fileno(kidin), &r, 1);
+  return r;
 }
 
 void Client::send_world(World* world)
@@ -131,34 +172,32 @@ void Client::send_world(World* world)
   int d = 0;
   int e = 0;
   int tries = 0;
-  char* size = new char[10];
-  fprintf(kidout, "$d\n", world->getWidth());
+  fprintf(kidout, "%d\n", world->getWidth());
   for(int i = 0; i < world->getWidth(); i++)
     {
-      write(1, world->grid, world->getWidth());
+      write(1, &world->grid[i*world->getWidth()], world->getWidth());
       std::cout << std::endl;
+    }
 
-      outbs = 0;
-      e = 0;
-      tries = 0;
-      while(outbs < world->getWidth())
-	{
-	  d = write(fileno(kidout),
-		    world->grid,
-		    world->getWidth());
-	  if(d < 0)
-	    e++;
-	  else
-	    outbs += d;
+  while(outbs < world->getWidth()*world->getWidth())
+    {
+      d = write(fileno(kidout),
+		&world->grid[outbs],
+		world->getWidth()*world->getWidth()-outbs);
+      if(d < 0)
+	e++;
+      else
+	outbs += d;
+      std::cerr << "Wrote " << d << " bytes." << std::endl;
 	  
-	  if(e >= 3 || ++tries > 10)
-	    {
-	      std::cerr << "Error writing to "
-			<< "child process.  "
-			<< "Terminating..."
-			<< std::endl;
-	      die();
-	    }
+      if(e >= 3 || ++tries > 10)
+	{
+	  std::cerr << "Error writing to "
+		    << "child process.  "
+		    << "Terminating..."
+		    << std::endl;
+	  die();
+	  break;
 	}
     }
 }
@@ -179,7 +218,6 @@ void Client::check_and_move(int dx,
       return;
     }
 
-  world->move(x,y,dx,dy);
   switch(grid[offs])
     {
     case PILL:
@@ -213,6 +251,7 @@ void Client::check_and_move(int dx,
     default:
       break;
     }
+  world->move(x,y,dx,dy);
   x = dx;
   y = dy;
 }
@@ -224,6 +263,6 @@ void Client::print_score()
 
 void Client::die()
 {
-  kill(pid, 9);
   live = false;
+  kill(pid, 9);
 }
