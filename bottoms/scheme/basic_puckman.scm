@@ -42,7 +42,12 @@
 	   (< (point-x p)  width) (>= (point-x p) 0) (< (point-y p) width) (>= (point-y p) 0))))
 ;;Helper functions
 (define (find-self board)
- (let ((pos (vector-index (lambda (n) (eq? #\C n)) (puckman-board-vec board))))
+ (let ((pos (vector-index (lambda (n) (or (eq? #\C n) (eq? #\@ n))) (puckman-board-vec board))))
+  (make-point (quotient pos (puckman-board-width board))
+	      (modulo pos (puckman-board-width board)) )
+))
+(define (find-enemy board)
+ (let ((pos (vector-index (lambda (n) (or (eq? #\P n) (eq? #\S n))) (puckman-board-vec board))))
   (make-point (quotient pos (puckman-board-width board))
 	      (modulo pos (puckman-board-width board)) )
 ))
