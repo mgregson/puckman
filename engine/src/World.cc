@@ -149,7 +149,7 @@ void World::flip()
   other = t;
 
   grid[other->x+(other->y*width)] = other->state;
-  grid[current->x+(current->y*width)] = SELF;
+  grid[current->x+(current->y*width)] = current->state == SPUCK ? SSELF : SELF;
 }
 
 

@@ -5,6 +5,8 @@
 
 int* grid;
 int width;
+int pos_x;
+int pos_y;
 
 void error(char* str)
 {
@@ -21,12 +23,13 @@ void init()
 int read_world()
 {
   int i = 0;
+  int j = 0;
   int tries = 0;
   int r = scanf("%d", &width);
   if(r != 1)
     {
       error("Can't read width: %d\n");
-      return -1;
+      return 0;
     }
 
   for(i = 0; i < width; ++i)
@@ -41,9 +44,30 @@ int read_world()
       if(tries >= 5)
 	{
 	  error("Can't read grid.\n");
-	  return -1;
+	  return 0;
 	}
     }
+
+  for(i = 0; i < width; ++i)
+    {
+      for(j = 0; j < width; ++j)
+	{
+	  if((grid[i+(j*width)] == SELF)
+	     || (grid[i+(j*width)] == SSELF))
+	    {
+	      pos_x = i;
+	      pos_y = j;
+	      continue;
+	    }
+	  if((grid[i+(j*width)] == PUCK)
+	     || (grid[i+(j*width)] == SPUCK))
+	    {
+	      epos_x = i;
+	      epos_y = j;
+	    }
+	}
+    }
+  return 1;
 }
 
 void left()

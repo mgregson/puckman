@@ -7,6 +7,7 @@
 #define DOT    '.'
 #define GHOST  '&'
 #define SELF   'C'
+#define SSELF  '@'
 #define PUCK   'P'
 #define SPUCK  'S'
 
