@@ -37,7 +37,7 @@ int read_world()
   int j = 0;
   int tries = 0;
   int r;
-  if(width = 0)
+  if(width == 0)
     {
       do
 	{
