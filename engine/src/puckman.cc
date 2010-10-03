@@ -21,7 +21,7 @@ int main(int argc, char** argv)
       sad_panda();
     }
 
-  int seed;
+  int seed = 0;
   Random rand;
   rand.seed(seed);
   int width = rand.rand() % 200;
@@ -36,7 +36,7 @@ int main(int argc, char** argv)
   b.x = 3;
   b.y = 3;
 
-  World world(width, &a, &b);
+  World world = World(width, &a, &b);
   world.generate(&rand);
 
   world.grid[a.x+(a.y*world.getWidth())] = 'C';
