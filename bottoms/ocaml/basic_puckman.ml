@@ -17,7 +17,7 @@ let do_move m = print_char m;;
 
 let rec main () = while true do 
 let board = read_board() in
-do_move 'M'
+do_move 'M' (* Not a valid move *)
 done;;
 
 main();;
