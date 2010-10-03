@@ -1,2 +1,3 @@
 #!/bin/bash
-./node randbot.js
+rawr=${0%runme}
+cd $rawr;./node randbot.js
