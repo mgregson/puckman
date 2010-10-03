@@ -7,9 +7,16 @@
 
 char random_unfill(Random* rand)
 {
-  if(float(rand->rand())/RAND_MAX > P_HOLLOW)
+  if(float(rand->rand())/RAND_MAX > (1-P_HOLLOW))
     return EMPTY;
-  return EMPTY;
+  return WALL;
+}
+
+char random_item(int x, int y, Random* rand)
+{
+  if(float(rand->rand())/RAND_MAX > (1-P_PILL))
+    return PILL;
+  return DOT;
 }
 
 bool _clear_from(int sx,
@@ -60,7 +67,7 @@ bool _clear_from(int sx,
 								    seen)))
     {
       grid[sx+(sy*gwidth)] = EMPTY;
-      grid[(gwidth-sx)+((gwidth-sy)*gwidth)] = EMPTY;
+      grid[(gwidth-(sx+1))+((gwidth-(sy+1))*gwidth)] = EMPTY;
       return true;
     }
   return false;
@@ -109,14 +116,27 @@ void World::generate(Random* rand)
 	}
     }
 
-  //TODO: Ensure reachability
   for(int w = 0; w < width; w++)
     {
-      for(int h = 0; h < w; h++)
+      for(int h = 0; h <= w; h++)
 	{
 	  if(grid[w+(h*width)] != WALL)
 	    {
 	      clear_from(w, h, w, width, 0, 0, width, grid);
+	    }
+	}
+    }
+
+  char item;
+  for(int w = 0; w < width; w++)
+    {
+      for(int h = 0; h <= w; h++)
+	{
+	  if(grid[w+(h*width)] == EMPTY)
+	    {
+	      item = random_item(w,h,rand);
+	      grid[w+(h*width)] = grid[(width-(w+1))+((width-(h+1))*width)]
+		= item;
 	    }
 	}
     }

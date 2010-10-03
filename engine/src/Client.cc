@@ -158,14 +158,19 @@ char Client::read_action()
   /*
   if(select(1, &readset, 0, 0, &timeout) <= 0)
     {
+      perror("select");
       die();
       return '~';
     }
   */
   char r = '~';
   int status;
-  while(status = read(fileno(kidin), &r, 1) < 1)
-    perror("read_action");
+  int count = 0;
+  while(status = read(fileno(kidin), &r, 1) < 1 && count < 3)
+    {
+      ++count;
+      perror("read_action");
+    }
   return r;
 }
 
@@ -226,7 +231,9 @@ void Client::check_and_move(int dx,
     {
     case PILL:
       score += 2;
-      grid[offs] = state = 'S';
+      state = SPUCK;
+      grid[offs] = SSELF;
+      countdown = PILL_DURATION+1;
       break;
     case DOT:
       score++;

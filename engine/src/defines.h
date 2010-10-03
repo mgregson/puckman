@@ -17,6 +17,9 @@
 #define SCORE_SPUCK     6
 #define SCORE_LASTMAN   5
 
-#define P_HOLLOW        0.15
+#define PILL_DURATION   6
+
+#define P_HOLLOW        0.85
+#define P_PILL          0.025
 
 #endif

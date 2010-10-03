@@ -43,21 +43,29 @@ int main(int argc, char** argv)
   world.grid[b.x+(b.y*world.getWidth())] = 'P';
   
   std::cout << "Starting contest" <<std::endl;
-
-  while(a.live && b.live)
+  
+  int rounds = 0;
+  while(a.live && b.live && rounds < 300)
     {
       a.do_turn(&world);
       world.flip();
       if(!b.live) break;
       b.do_turn(&world);
       world.flip();
+      ++rounds;
     }
 
   if(a.live)
-    a.score += SCORE_LASTMAN;
+    {
+      a.score += SCORE_LASTMAN;
+      a.die();
+    }
 
   if(b.live)
-    b.score += SCORE_LASTMAN;
+    {
+      b.score += SCORE_LASTMAN;
+      b.die();
+    }
 
   a.print_score();
   b.print_score();

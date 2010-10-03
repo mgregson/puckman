@@ -17,8 +17,8 @@
 #define SCORE_SPUCK     6
 #define SCORE_LASTMAN   5
 
-#define BOUNDS(x,min,max) ((x < min ? min : x) > max ? max : x)
-#define IN_BOUNDS(x) (BOUNDS(x,0,width) == x)
+#define BOUNDS(x,min,max) ((x < min ? min : x) >= max ? max-1 : x)
+#define IN_BOUNDS(x,y) (BOUNDS(x,0,width) == x && BOUNDS(y,0,width) == y)
 #define CELL(x,y) grid[x+(y*width)]
 #define AM_SUPER (CELL(pos_x,pos_y) == SSELF)
 #define IS_SUPER (CELL(epos_x,epos_y) == SPUCK)

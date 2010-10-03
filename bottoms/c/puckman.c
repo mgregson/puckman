@@ -21,6 +21,7 @@ void init()
 {
   setvbuf(stdout, NULL, _IONBF, 0);
   setvbuf(stdin, NULL, _IONBF, 0);
+  width = 0;
 }
 
 void cleanup()
@@ -35,19 +36,26 @@ int read_world()
   int i = 0;
   int j = 0;
   int tries = 0;
-  width = 0;
   int r;
-  do
+  if(width = 0)
     {
-      r = fgetc(stdin);
-      if(r < '0' || r > '9') continue;
-      width = width*10;
-      width += (r-'0');
+      do
+	{
+	  r = fgetc(stdin);
+	  if(r < '0' || r > '9') continue;
+	  width = width*10;
+	  width += (r-'0');
+	}
+      while(r != '\n');
+      grid = (char*)malloc(width*width);
     }
-  while(r != '\n');
-  if(!grid)
-    grid = (char*)malloc(width*width);
-  r = 0;
+  else
+    do
+      {
+	r = fgetc(stdin);
+      }
+    while(r != '\n');
+    r = 0;
   while(r < width*width && tries < 10)
     {
       j = read(0, &grid[r], width*width-r);
