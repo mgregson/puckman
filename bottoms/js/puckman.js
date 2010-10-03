@@ -82,7 +82,7 @@ exports.play = function(moveFn) {
               }
               data = data + line;
               if (lineNumber == height || line.length == width*width) {
-                  sys.puts(moveFn(
+                  process.stdout.write(moveFn(
                   /* The Board object */
                   {
                     /* width of the board */
