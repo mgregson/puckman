@@ -15,7 +15,8 @@ PuckmanWorld::PuckmanWorld(Puckman* p,
 PuckmanWorld::~PuckmanWorld()
 {
   if(grid)
-    delete grid;
+    delete [] grid;
+  grid = NULL;
 }
 
 void PuckmanWorld::run()
