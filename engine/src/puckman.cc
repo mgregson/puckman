@@ -31,10 +31,10 @@ int main(int argc, char** argv)
   Client a(argv[1]);
   Client b(argv[2]);
 
-  a.x = 10;
+  a.x = 20;
   a.y = 10;
-  b.x = 3;
-  b.y = 3;
+  b.x = 15;
+  b.y = 1;
 
   World world = World(width, &a, &b);
   world.generate(&rand);
