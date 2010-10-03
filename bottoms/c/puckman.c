@@ -11,6 +11,14 @@ int pos_y;
 int epos_x;
 int epos_y;
 
+char access_cell (int x , int y) {
+  return grid[x+(y*width)];
+}
+
+int check_in_bounds (int x , int y) {
+  return (0 <= x && x < width && 0 <= y && y < width);
+}
+
 void error(char* str)
 {
   fprintf(stderr, "%s", str);
