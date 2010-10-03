@@ -104,7 +104,7 @@ void World::generate(Random* rand)
     {
       for(int h = 0; h <= w; h++)
 	{
-	  grid[(width-h)+((width-w)*width)] = grid[h+(w*width)]
+	  grid[(width-(h+1))+((width-(w+1))*width)] = grid[h+(w*width)]
 	    = random_unfill(rand);
 	}
     }
