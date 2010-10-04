@@ -1,3 +1,4 @@
+CFLAGS = -g 
 all: runme
 
 runme:  *.c *.h
