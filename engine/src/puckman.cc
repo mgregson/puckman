@@ -1,11 +1,18 @@
 #include <iostream>
 #include <stdlib.h>
+#include <utility>
+#include <list>
 
 #include "Client.h"
 #include "Random.h"
 #include "World.h"
 
 #include "defines.h"
+
+struct point
+{
+  int x, y;
+};
 
 void sad_panda()
 {
@@ -31,13 +38,49 @@ int main(int argc, char** argv)
   Client a(argv[1]);
   Client b(argv[2]);
 
-  a.x = 20;
-  a.y = 10;
-  b.x = 15;
-  b.y = 1;
-
   World world = World(width, &a, &b);
   world.generate(&rand);
+
+  point start;
+  start.x = rand.rand() % width;
+  start.y = rand.rand() % width;
+
+  //bfs find reasonable start location
+  std::list<point> tosee;
+  point n;
+  while(world.grid[start.x+(start.y*width)] == WALL)
+    {
+      if(start.x-1 >= 0)
+	{
+	  n.x = start.x-1;
+	  n.y = start.y;
+	  tosee.push_back(n);
+	}
+      if(start.x+1 < width)
+	{
+	  n.x = start.x+1;
+	  n.y = start.y;
+	  tosee.push_back(n);
+	}
+      if(start.y-1 >= 0)
+	{
+	  n.x = start.x;
+	  n.y = start.y-1;
+	  tosee.push_back(n);
+	}
+      if(start.y+1 < width)
+	{
+	  n.x = start.x;
+	  n.y = start.y-1;
+	}
+      start = tosee.front();
+      tosee.pop_front();
+    }
+
+  a.x = start.x;
+  a.y = start.y;
+  b.x = width - (start.x + 1);
+  b.y = width - (start.y + 1);
 
   world.grid[a.x+(a.y*world.getWidth())] = 'C';
   world.grid[b.x+(b.y*world.getWidth())] = 'P';
