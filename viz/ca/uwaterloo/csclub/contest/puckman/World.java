@@ -46,6 +46,16 @@ public class World
 	return dynamicCells;
     }
 
+    public boolean isWall(int x, int y)
+    {
+	return grid[x][y].c == Cell.WALL;
+    }
+
+    public int getWidth()
+    {
+	return width;
+    }
+
     public class GridEntry
     {
 	int x, y;
