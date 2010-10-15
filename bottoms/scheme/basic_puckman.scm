@@ -2,26 +2,33 @@
 (require (lib "43.ss" "srfi"))
 ;;Chose a move
 (define (chose-move board self)
-  (if (have-power board) (try-to-eat-competitor board self try-to-eat-dot) (try-to-eat-dot board self) )
+  (if (have-power board) (try-to-eat-competitor board self try-to-eat-dot rand-eat-space) (try-to-eat-dot board self rand-eat-space) )
   )
 ;;If it can eat the competitor in one move it does it
 ;;Otherwise call alternate strategy
-(define (try-to-eat-competitor board self alt)
+(define (try-to-eat-competitor board self alt alt2)
   (cond
   ((eq? #\P (above-p board self)) #\U)
   ((eq? #\P (bellow-p board self)) #\D)
   ((eq? #\P (left-of-p board self)) #\L)
   ((eq? #\P (right-of-p board self)) #\R)
-  (else (alt board self) );;Default is left
+  (else (alt board self al2) );;Default is left
   ))
-(define (try-to-eat-dot board self)
+(define (try-to-eat-dot board self alt)
  (cond
   ((eq? #\. (above-p board self)) #\U)
   ((eq? #\. (bellow-p board self)) #\D)
   ((eq? #\. (left-of-p board self)) #\L)
   ((eq? #\. (right-of-p board self)) #\R)
-  (else #\L);;Default is left
+  (else (alt board self));;Default is left
   ))
+(define (rand-eat-space board self)
+ (letrec ((validmoves (find-valid-moves board self))
+	  (movechosen (random (abs (- (length validmoves) 1)))))
+   (if (> (length validmoves) 0) (car (drop validmoves movechosen)) #\L);;Fucked
+  )
+)
+
 ;;Main loop
 ;;Sample main loop
 ;;Attempts to eat a dot. If it can't, it goes left
@@ -34,6 +41,28 @@
   (do-move move)
   (main)
   )
+)
+;;Find the valid moves
+(define (find-valid-moves board self)
+ (map cdr (filter (lambda (n) (is-valid board (car n))) (find-relative board self)))
+)
+;;Check if a move is valid for us
+(define (is-valid board move)
+  (cond
+    ((eq? #\. move) #t)
+    ((eq? #\  move) #t)
+    ((eq? #\S move) #f);;We say never go for self destruct
+    ((eq? #\O move) #t)
+    ((eq? #\+ move) #f)
+    ((have-power board) #t);;Other posibilites are valid if we have power pill
+    (else #f);;no power pill, we would die
+  ))
+;;Zip two lists together
+(define (zip a b)
+ (if (or (empty? a) (empty? b)) '() (cons (cons a b) (zip (cdr a) (cdr b))))
+)
+(define (find-relative board self)
+ (zip (map (lambda (n) (n board self) ) moves) movenames)
 )
 
 ;;Board structure
@@ -57,6 +86,9 @@
 (define (left-of-p board p)
  (get-from-board board (make-point (point-x p) (- (point-y p) 1)))
 )
+;;Moves and names
+(define moves (list bellow-p above-p right-of-p left-of-p))
+(define movenames (list #\D #\U #\R #\L))
 ;;Determine whats at a point, or if given an invalid point give back !
 (define (get-from-board board p)
  (let ((position-in-vector (+ (* 
