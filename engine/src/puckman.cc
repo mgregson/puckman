@@ -88,7 +88,7 @@ int main(int argc, char** argv)
   std::cout << "Starting contest" <<std::endl;
   
   int rounds = 0;
-  while(a.live && b.live && rounds < 300)
+  while(a.live && b.live && rounds < ROUND_LIMIT)
     {
       a.do_turn(&world);
       world.flip();
