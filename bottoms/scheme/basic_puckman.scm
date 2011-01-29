@@ -2,7 +2,11 @@
 (require (lib "43.ss" "srfi"))
 ;;Chose a move
 (define (chose-move board self)
-  (if (have-power board) (try-to-eat-competitor board self try-to-eat-dot rand-eat-space) (try-to-eat-dot board self rand-eat-space) )
+  (if (have-power board) 
+      ;;If we have the power pil go for gold
+      (try-to-eat-competitor board self try-to-eat-dot rand-eat-space) 
+      ;;If we don't try and find a dot
+      (try-to-eat-dot board self rand-eat-space) )
   )
 ;;If it can eat the competitor in one move it does it
 ;;Otherwise call alternate strategy

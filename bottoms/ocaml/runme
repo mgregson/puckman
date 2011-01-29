@@ -1,3 +1,0 @@
-#!/bin/bash
-rawr=${0%runme}
-cd $rawr;./basic_puckman
