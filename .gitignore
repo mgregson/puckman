@@ -4,3 +4,4 @@ engine/bin
 engine/build
 Makefile~
 *.c~
+*.java~

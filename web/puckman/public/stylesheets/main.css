@@ -1,0 +1,49 @@
+.main-content {
+		position: relative;
+		width: 760px;
+		border: black 1px solid;
+		margin-left: auto;
+		margin-right: auto;
+		padding: 0p 0px 0px 0px;
+}
+
+.title {
+		background-color: darkblue;
+		color: white;
+		font-weight: bold;
+		text-align: center;
+		margin: 0px 0px 0px 0px;
+		padding: 0px 0px 0px 0px;
+}
+
+.left-nav {
+		left: 0;
+		float: left;
+		width: 150px;
+		height: 100%;
+		border-top: black 1px solid;
+}
+
+.content {
+		margin-left: 150px;
+		border-left: black 1px solid;
+		border-top: black 1px solid;
+		padding: 10px;
+}
+
+.expander {
+		clear: both;
+}
+
+ul.menu {
+		list-style-type: none;
+		padding: 10px;
+		padding-top: 0px;
+		padding-bottom: 0px;
+		margin: 0px 0px 0px 0px;
+}
+
+ul.menu li {
+		padding: 0px;
+		margin: 0px;
+}
