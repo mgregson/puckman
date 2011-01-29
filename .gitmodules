@@ -1,0 +1,3 @@
+[submodule "web/puckman/public/javascripts/jquery-ujs"]
+	path = web/puckman/public/javascripts/jquery-ujs
+	url = git://github.com/rails/jquery-ujs.git
