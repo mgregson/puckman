@@ -6,6 +6,7 @@
 #include "Client.h"
 #include "Random.h"
 #include "World.h"
+#include "Visualizer.h"
 
 #include "defines.h"
 
@@ -16,17 +17,22 @@ struct point
 
 void sad_panda()
 {
-  std::cerr << "Unhappy - needs some stuff to run!"
+  std::cerr << "Unhappy - needs some stuff to run! (app1 app2 [visualizer])"
 	    << std::endl;
   exit(5);
 }
 
 int main(int argc, char** argv)
 {
+  
   if(argc < 3)
     {
       sad_panda();
     }
+  Visualizer * v = NULL;
+  if (3 < argc) {
+    v = new Visualizer(argv[3]);
+  }
 
   int seed = 0;
   Random rand;
@@ -92,8 +98,12 @@ int main(int argc, char** argv)
     {
       a.do_turn(&world);
       world.flip();
+      if (v != NULL)
+	v->send_world(&world);
       if(!b.live) break;
       b.do_turn(&world);
+      if (v != NULL)
+	v->send_world(&world);
       world.flip();
       ++rounds;
     }
@@ -112,5 +122,8 @@ int main(int argc, char** argv)
 
   a.print_score();
   b.print_score();
+  if (v != NULL) {
+    delete v;
+  }
   exit(0);
 }
