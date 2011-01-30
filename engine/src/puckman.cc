@@ -29,10 +29,6 @@ int main(int argc, char** argv)
     {
       sad_panda();
     }
-  Visualizer * v = NULL;
-  if (3 < argc) {
-    v = new Visualizer(argv[3]);
-  }
 
   int seed = 0;
   Random rand;
@@ -92,18 +88,26 @@ int main(int argc, char** argv)
   world.grid[b.x+(b.y*world.getWidth())] = 'P';
   
   std::cout << "Starting contest" <<std::endl;
+
+  Visualizer * v = NULL;
+  if (3 < argc) {
+    std::cout << "Starting visualizer" << std::endl;
+    v = new Visualizer(argv[3]);
+  }
   
   int rounds = 0;
   while(a.live && b.live && rounds < ROUND_LIMIT)
     {
       a.do_turn(&world);
       world.flip();
-      if (v != NULL)
-	v->send_world(&world);
+      if (v != NULL) {
+	v->send_world(a.score,b.score,&world);
+      }
       if(!b.live) break;
       b.do_turn(&world);
-      if (v != NULL)
-	v->send_world(&world);
+      if (v != NULL) {
+	v->send_world(a.score,b.score,&world);
+      }
       world.flip();
       ++rounds;
     }
@@ -120,10 +124,10 @@ int main(int argc, char** argv)
       b.die();
     }
 
-  a.print_score();
-  b.print_score();
   if (v != NULL) {
     delete v;
   }
+  a.print_score();
+  b.print_score();
   exit(0);
 }

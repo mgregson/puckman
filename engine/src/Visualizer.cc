@@ -78,15 +78,18 @@ Visualizer::Visualizer(char* cmd)
 
 Visualizer::~Visualizer()
 {
-
+  fprintf(kidout, "endofgame\n");
 }
 
-void Visualizer::send_world(World* world)
+void Visualizer::send_world(int a,int b,World* world)
 {
   int outbs = 0;
   int d = 0;
   int e = 0;
   int tries = 0;
+  //Send the scores
+  fprintf(kidout, "%d\n%d\n", a,b);
+  //Send what the world is going to be
   fprintf(kidout, "%d\n", world->getWidth());
   for(int i = 0; i < world->getWidth(); i++)
     {
