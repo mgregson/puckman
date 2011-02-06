@@ -16,7 +16,7 @@ private:
   FILE* kidout;
 public:
   void send_world(int a,int b,World*);
-  Visualizer(char*);
+  Visualizer(const char*);
   ~Visualizer();
 };
 

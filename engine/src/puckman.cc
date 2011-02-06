@@ -2,12 +2,16 @@
 #include <stdlib.h>
 #include <utility>
 #include <list>
+#include <string>
+#include <string.h>
+
+#include <getopt.h>
 
 #include "Client.h"
 #include "Random.h"
 #include "World.h"
 #include "Visualizer.h"
-
+#include "Logger.h"
 #include "defines.h"
 
 struct point
@@ -15,21 +19,45 @@ struct point
   int x, y;
 };
 
-void sad_panda()
-{
-  std::cerr << "Unhappy - needs some stuff to run! (app1 app2 [visualizer])"
-	    << std::endl;
-  exit(5);
-}
-
 int main(int argc, char** argv)
 {
   
-  if(argc < 3)
-    {
-      sad_panda();
+  //Extract the options
+  static struct option long_options [] = {
+    {"contestants",required_argument,NULL,'c'},
+    {"visualizer",required_argument,NULL,'v'},
+    {"logger",required_argument,NULL,'l'},
+    {0, 0, 0, 0}
+  };
+  char ch;
+  int long_opt_index = 0;
+  std::string player1_program,player2_program,visualizer_program,log_file;
+  char * players;
+  while ((ch = getopt_long(argc,argv,"cvl",long_options,&long_opt_index)) != -1) {
+    switch(ch) {
+    case 'c':
+      players = strtok(optarg," ");
+      player1_program = players;
+      strtok(NULL , " ");
+      if (players == NULL) {
+	std::cerr << "Require two players!" << std::endl;
+	exit(-1);
+      }
+      player2_program = players;
+      break;
+    case 'v':
+      visualizer_program = optarg;
+      break;
+    case 'l':
+      log_file = optarg;
+      break;
     }
-
+  }
+  if (player1_program == "" || player2_program == "") {
+    std::cerr << "Please specifiy players with --contestants [player1] [player2]" << std::endl;
+    exit(1);
+  }
+  //Random stuff
   int seed = 0;
   Random rand;
   rand.seed(seed);
@@ -37,8 +65,8 @@ int main(int argc, char** argv)
 
   std::cout << width << std::endl;
 
-  Client a(argv[1]);
-  Client b(argv[2]);
+  Client a(player1_program.c_str());
+  Client b(player2_program.c_str());
 
   World world = World(width, &a, &b);
   world.generate(&rand);
@@ -90,9 +118,15 @@ int main(int argc, char** argv)
   std::cout << "Starting contest" <<std::endl;
 
   Visualizer * v = NULL;
-  if (3 < argc) {
+  if (visualizer_program != "") {
     std::cout << "Starting visualizer" << std::endl;
-    v = new Visualizer(argv[3]);
+    v = new Visualizer(visualizer_program.c_str());
+  }
+
+  Logger * l = NULL;
+  if (log_file != "") {
+    std::cout << "Logging output to " << log_file << std::endl;
+    l = new Logger(log_file.c_str());
   }
   
   int rounds = 0;

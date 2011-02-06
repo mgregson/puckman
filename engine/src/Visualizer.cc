@@ -10,7 +10,7 @@
 
 #include "defines.h"
 
-Visualizer::Visualizer(char* cmd)
+Visualizer::Visualizer(const char* cmd)
 {
 
   int writepipe[2];
