@@ -10,11 +10,13 @@
 
 #include "defines.h"
 
+//Open output
 Logger::Logger(const char* file)
 {
   log_stream.open(file);
 }
 
+//Close stream when done
 Logger::~Logger()
 {
   log_stream.close();
@@ -52,6 +54,7 @@ void Logger::send_world(int p1id, int p2id,World * world) {
   log_stream << "#Number of ghosts" << std::endl;
   //Number of ghosts is 0 for now
   log_stream << 0 << std::endl;
+  log_stream << "#World!" << std::endl;
   for(int i = 0; i < world->getWidth()*world->getWidth(); i++)
     {
       log_stream << world->grid[i];
