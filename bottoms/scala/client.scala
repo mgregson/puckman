@@ -23,6 +23,7 @@ object Board {
       }
 }
 
-val board = new Board(2,"a@cd")
-println("Lols "+board.puckman)
-val board2 = Board.readBoard()
+while (true) {
+	val board2 = Board.readBoard()
+	println("U")
+}
