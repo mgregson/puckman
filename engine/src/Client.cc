@@ -10,7 +10,7 @@
 
 #include "defines.h"
 
-Client::Client(char* cmd)
+Client::Client(const char* cmd)
 {
   live = false;
   countdown = 0;

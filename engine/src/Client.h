@@ -28,7 +28,7 @@ private:
   void check_and_move(int, int, World*);
 
 public:
-  Client(char*);
+  Client(const char*);
   ~Client();
   void do_turn(World*);
   void print_score();
