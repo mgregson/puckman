@@ -2,7 +2,7 @@
 .-regular dot
 +-impassable
 O-power pill/super dot
-#-Ghost
+G-Ghost
 C-You
 @-You on power pill
 P-Puck man
